@@ -1,0 +1,25 @@
+clc;
+clear all;
+h=0.05;
+t0=0;
+u0=1;
+tn=1;
+n=(tn-t0)/h;
+for i=1:n
+u0=(-1+sqrt(1^2-4*2*h*(t0+i*h)*(-u0)))/(2*2*h*(t0+i*h));
+t=t0+i*h;
+fprintf('At t=%f,The interpolated value of Yp using backward
+eulers is=%f\n',t,u0)
+hold on
+h1=plot(t0+i*h,u0,'b*');
+end
+syms y(x)
+Dy=diff(y,x)==-2*x*y^2;
+cond=y(0)==1;
+ySol=dsolve(Dy,cond);
+h2=fplot(ySol,[0 1],'r-');
+hold off
+xlabel('x')
+ylabel('y')
+title('backward euler''s method vs Exact Solution Graph');
+legend([h1,h2],'backward euler''s method','Exact solution');

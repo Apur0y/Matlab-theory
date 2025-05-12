@@ -29,3 +29,38 @@ xlabel('x')
 ylabel('y')
 title('Heun''s Method (RK2) vs Exact Solution Graph');
 legend([h1,h2],'Heun''s method','Exact solution');
+
+//New Method
+%solve the IVP Dy=y-x^2,y(0)=1,by using Runge Kutta mehod
+%with h=0.1,D is the differential operator with respect to x
+clc
+clear all
+f=@(x,y)y-x^2 ;
+x0=0;
+y0=1;
+h=0.1; 
+n=10;  % to compute up to 1.0
+x=zeros(1,n+1);  %initialized the arry to store the result
+y=zeros(1,n+1);
+x(1)=x0;
+y(1)=y0;
+for i=1:n
+    k1=f(x(i),y(i));
+    k2=f(x(i)+(h/2),y(i)+h*k1/2);
+    k3=f(x(i)+(h/2),y(i)+h*k2/2);
+    k4=f(x(i)+h,y(i)+h*k3);
+    y(i+1)=y(i)+(h/6)*(k1+2*k2+2*k3+k4);
+    x(i+1)=x(i)+h;
+end
+fprintf('runge kutta method for h=%.3f\n',h);
+fprintf('----------------------\n');
+fprintf(' x          y(x)\n');
+for i=1:length(x)
+    fprintf('%.3f    %.3f\n',x(i),y(i))
+end
+plot(x, y, '-o', 'LineWidth', 1.5);
+xlabel('x');
+ylabel('y(x)');
+title('Solution of dy/dx = y - x², y(0) = 1');
+grid on;
+    

@@ -1,28 +1,36 @@
-clc;
-clear all;
-syms f x y;
-f=y-x^2;
-x0=0;
-y0=1;
-h=0.1;
-xn=1;
-n=(xn-x0)/h;
-for i=1:n
-k1=subs(subs(f,x,x0),y,y0);
-k2=subs(subs(f,x,x0+h/2),y,y0+h*k1/2);
-y0=y0+h*k2;
-x0=x0+h;
-hold on
-h1=plot(x0,y0,'r*');
-fprintf('At x=%f,The interpolated value of Yp using mid point is=%f\n',x0,y0)
+%dy/dx=-2*x*y^2, y(0)=1 with h=0.2 over the interval [0,1].
+clc
+clear all
+f=@(x,y) -2*x*y.^2 ;
+h=0.2;
+x_end=1;
+%mesh space of x axis/ x=x(1):h:x_end/n=length(x)
+n=(x_end-0)/h+1;  %n=b-a/h /science i need 6 point 0,0.2,0.4,0.6,0.8,1
+%initialized the 'x'arrays and solution arrays or 'y' array
+x=zeros(1,n);
+y=zeros(1,n);
+x(1)=0;  % we set the initial condition after initialized the array
+y(1)=1;
+for i=1:n-1
+    k1=f(x(i),y(i)) ;%k1=f(x0,y0)
+    k2=f(x(i)+h/2,y(i)+h/2*k1);% k2=f(x(mid),y(mid))/x(mid)=x0+h/2/y(mid)=y0+h/2*k1
+    y(i+1)=y(i)+h*k2;
+    x(i+1)=x(i)+h ;
 end
-syms y(x)
-Dy=diff(y,x)==y-x^2;
-cond=y(0)==1;
-ySol=dsolve(Dy,cond);
-h2=fplot(ySol,[0 1],'b-');
+disp('x           y(x)');
+disp('--------------------')
+    
+for i=1:n
+    fprintf('%.2f \t\t%.4f\n',x(i),y(i))
+end
+plot(x,y,'b-o','Linewidth',2);
+xlabel('x');
+ylabel('y');
+title('numerical solution for dy/dx=-2*x*y^2');
+grid on
+hold on
+x_exact=linspace(0,x_end,100);
+y_exact=1./(x_exact.^2+1) ;
+plot(x_exact,y_exact,'r--','Linewidth',1.5);
+legend('mid point method','exact solution');
 hold off
-xlabel('x')
-ylabel('y')
-title('midpoint method vs Exact Solution Graph');
-legend([h1,h2],'midpoint method','Exact solution');

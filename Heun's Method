@@ -1,0 +1,29 @@
+clc;
+clear all;
+syms f x y;
+f=y-x^2;
+x0=0;
+y0=1;
+h=0.1;
+xn=1;
+n=(xn-x0)/h;
+for i=1:n
+k1=subs(subs(f,x,x0),y,y0);
+k2=subs(subs(f,x,x0+h),y,y0+h*k1);
+y0=y0+(h/2)*(k1+k2);
+x0=x0+h;
+fprintf('At x=%f, the interpolated value of y using RK-2 is
+=%f\n',x0,y0);
+hold on
+h1=plot(x0,y0,'b*');
+end
+syms y(x)
+Dy=diff(y,x)==y-x^2;
+cond=y(0)==1;
+ySol=dsolve(Dy,cond);
+h2=fplot(ySol,[0 1],'r-');
+hold off
+xlabel('x')
+ylabel('y')
+title('Heun''s Method (RK2) vs Exact Solution Graph');
+legend([h1,h2],'Heun''s method','Exact solution');

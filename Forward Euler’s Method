@@ -1,0 +1,24 @@
+clc;
+clear all;
+h=0.05;
+t0=0;
+u0=1;
+tn=1;
+n=(tn-t0)/h;
+for i=1:n
+u0=u0-2*h*t0*u0^2;
+t0=t0+h;
+hold on
+h1=plot(t0,u0,'b*');
+fprintf('At t=%f,The interpolated value of Yp using forward eulers is=%f\n',t0,u0)
+end
+syms y(x)
+Dy=diff(y,x)==-2*x*y^2;
+cond=y(0)==1;
+ySol=dsolve(Dy,cond);
+h2=fplot(ySol,[0 1],'r-');
+hold off
+xlabel('x')
+ylabel('y')
+title('forward euler''s method vs Exact Solution Graph');
+legend([h1,h2],'forward euler''s method','Exact solution');

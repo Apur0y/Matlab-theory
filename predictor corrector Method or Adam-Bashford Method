@@ -1,0 +1,46 @@
+clc;
+clear all;
+syms f x y;
+f=y-x^2;
+x0=0;
+y0=1;
+h=0.2;
+xn=1;
+n=(xn-(x0+3*h))/h;
+A=zeros(3,1);
+f0=subs(subs(f,x,x0),y,y0);
+for i=1:3
+k1=h*subs(subs(f,x,x0),y,y0);
+k2=h*subs(subs(f,x,x0+h/2),y,y0+k1/2);
+k3=h*subs(subs(f,x,x0+h/2),y,y0+k2/2);
+k4=h*subs(subs(f,x,x0+h),y,y0+k3);
+y0=y0+(1/6)*(k1+2*k2+2*k3+k4);
+x0=x0+h;
+func=subs(subs(f,x,x0),y,y0);
+A(i)=func;
+end
+for j=1:2
+prey=y0+(h/24)*(55*A(3)-59*A(2)+37*A(1)-9*f0);
+pref=subs(subs(f,x,x0+j*h),y,prey);
+corry=y0+(h/24)*(9*pref+19*A(3)-5*A(2)+A(1));
+corrf=subs(subs(f,x,x0+h),y,corry);
+f0=A(1);
+A(1)=A(2);
+A(2)=A(3);
+A(3)=corrf;
+y0=corry;
+end
+fprintf('At x=%f,The interpolated value of Yp using function
+is=%f',xn,corry)
+syms y(x)
+Dy=diff(y,x)==y-x^2;
+cond=y(0)==1;
+ySol=dsolve(Dy,cond);
+hold on
+h2=fplot(ySol,[0 xn+1]);
+h1=plot(xn,corry,'*');
+hold off
+xlabel('x')
+ylabel('y')
+title('Predictor corrector method vs Exact Solution Graph');
+legend([h1,h2],'Predictor corrector method','Exact solution');

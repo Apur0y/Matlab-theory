@@ -1,0 +1,62 @@
+%approximate initial slope for the system d2y/dx2=6y2-x; 0<=x<=1 with
+%y(0)=1,y(1)=5 and h=1/3 using shooting method where initial guess for the slope[1.2 1.5]. 
+clc
+clear all;
+f = @(x, y, z) z;
+g = @(x, y, z) 6 * y.^2 - x;
+% Boundary conditions
+a = 0;
+b = 1;
+y_a = 1;
+y_b = 5;
+% Initial slope guesses
+z_guess = [1.2, 1.5];
+% Tolerance and step size
+e = 0.0001;
+h = 1/3;
+% Maximum iterations
+n = 100;
+% Shooting method with Secant iteration
+for i = 1:n
+    % Solve ODE with current guesses
+    [~, y1] = euler(f, g, a, b, y_a, z_guess(1), h);
+    [~, y2] = euler(f, g, a, b, y_a, z_guess(2), h);
+    % Compute errors
+    e1 = y1(end) - y_b;
+    e2 = y2(end) - y_b;
+    % Secant method update
+    z_new = z_guess(2) - e2 * (z_guess(2) - z_guess(1)) / (e2 - e1);
+    % Check convergence
+    if abs(e2) < e
+        fprintf('Converged in %d iterations.\n', i);
+        z_guess(2) = z_new;
+        break;
+    end
+    % Update guesses
+    z_guess(1) = z_guess(2);
+    z_guess(2) = z_new;
+    % Check if max iterations reached
+    if i == n
+        fprintf('Maximum iterations reached without convergence.\n');
+    end
+end
+% Final solution
+[x, y] = euler(f, g, a, b, y_a, z_guess(2), h);
+% Display results
+fprintf('Final slope at x=%d is: %f\n', a, z_guess(2));
+fprintf('at x=%d: y = %.6f (Target: %.6f)\n', b, y(end), y_b);
+fprintf('\n numerical Solution:\n\t\tx\t\ty(x)\n');
+disp([x', y']);
+% Euler method implementation
+function [x, y] = euler(f, g, a, b, y_a, za, h)
+    x = a:h:b;
+    n = length(x);
+    y = zeros(1, n);
+    z = zeros(1, n);
+    y(1) = y_a;
+    z(1) = za;
+    for i = 1:n-1
+        y(i+1) = y(i) + h * f(x(i), y(i), z(i));
+        z(i+1) = z(i) + h * g(x(i), y(i), z(i));
+    end
+end

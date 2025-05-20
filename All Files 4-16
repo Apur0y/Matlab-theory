@@ -1,0 +1,581 @@
+1st order- RK 
+clc;
+clear all;
+f1=@(x,y1,y2) x+y1+y2;
+f2=@(x,y1,y2) 1+y1+y2;
+x(1)=input('Enter the initial point of x: ');
+y1(1)=input('Enter the initial point of y1: ');
+y2(1)=input('Enter the initial point of y2: ');
+h=input('Enter the increment value(h): ');
+xn=input('Enter the final value of x: ');
+n=(xn-x(1))/h;
+x=x(1):h:xn;
+for i=1:n+1
+ k(1,1)=h*f1(x(i),y1(i),y2(i));
+ k(1,2)=h*f2(x(i),y1(i),y2(i));
+
+ k(2,1)=h*f1(x(i)+(h/2),y1(i)+k(1,1)/2,y2(i)+k(1,2)/2);
+ k(2,2)=h*f2(x(i)+(h/2),y1(i)+k(1,1)/2,y2(i)+k(1,2)/2);
+
+ k(3,1)=h*f1(x(i)+(h/2),y1(i)+k(2,1)/2,y2(i)+k(2,2)/2);
+ k(3,2)=h*f2(x(i)+(h/2),y1(i)+k(2,1)/2,y2(i)+k(2,2)/2);
+
+ k(4,1)=h*f1(x(i)+h,y1(i)+k(3,1),y2(i)+k(3,2));
+ k(4,2)=h*f2(x(i)+h,y1(i)+k(3,1),y2(i)+k(3,2));
+
+ y1(i+1)=y1(i)+(1/6)*(k(1,1)+2*k(2,1)+2*k(3,1)+k(4,1));
+ y2(i+1)=y2(i)+(1/6)*(k(1,2)+2*k(2,2)+2*k(3,2)+k(4,2));
+ fprintf('y1(%g)=%f\ty2(%g)=%f\n',x(i),y1(i),x(i),y2(i));
+end
+fprintf('\n\n\n')
+disp('The values of y(x) at x=1.5')
+for i=n+2:n+6
+ x(i)=x(i-1)+h;
+ k(1,1)=h*f1(x(i),y1(i),y2(i));
+ k(1,2)=h*f2(x(i),y1(i),y2(i));
+
+ k(2,1)=h*f1(x(i)+(h/2),y1(i)+k(1,1)/2,y2(i)+k(1,2)/2);
+ k(2,2)=h*f2(x(i)+(h/2),y1(i)+k(1,1)/2,y2(i)+k(1,2)/2);
+
+ k(3,1)=h*f1(x(i)+(h/2),y1(i)+k(2,1)/2,y2(i)+k(2,2)/2);
+ k(3,2)=h*f2(x(i)+(h/2),y1(i)+k(2,1)/2,y2(i)+k(2,2)/2);
+
+ k(4,1)=h*f1(x(i)+h,y1(i)+k(3,1),y2(i)+k(3,2));
+ k(4,2)=h*f2(x(i)+h,y1(i)+k(3,1),y2(i)+k(3,2));
+
+ y1(i+1)=y1(i)+(1/6)*(k(1,1)+2*k(2,1)+2*k(3,1)+k(4,1));
+ y2(i+1)=y2(i)+(1/6)*(k(1,2)+2*k(2,2)+2*k(3,2)+k(4,2));
+
+end
+fprintf('y1(%g)=%f\ty2(%g)=%f\n',x(n+6),y1(n+6),x(n+6),y2(n+6));
+
+
+
+Higher order -4RK
+clc
+clear all
+clear figure
+x(1)=0;
+xn=3;
+h=0.2;
+n=(xn-x(1))/h;
+y1(1) = 1;
+y2(1) = 2;
+y3(1) = 0;
+f1 = @(x, y1, y2, y3) y2;
+f2 = @(x, y1, y2, y3) y3;
+f3 = @(x, y1, y2, y3) -2*y3 + y2 + 2*y1 + exp(x);
+% Exact solution
+Y =@(x) (43/36)*exp(x) + (1/4)*exp(-x) - (4/9)*exp(-2*x) + (1/6)*x.*exp(x);
+for i=2:n+1
+ x(i)=x(i-1)+h;
+y_exact(i)=Y(x(i));
+end
+y_exact
+for i=2:n+1
+ x(i)=x(i-1)+h;
+ k(1,1)=h * f1(x(i-1), y1(i-1), y2(i-1), y3(i-1));
+ k(1,2)=h * f2(x(i-1), y1(i-1), y2(i-1), y3(i-1));
+ k(1,3)=h * f3(x(i-1), y1(i-1), y2(i-1), y3(i-1));
+
+ k(2,1)=h * f1(x(i-1)+h/2, y1(i-1)+k(1,1)/2, y2(i-1)+k(1,2)/2, y3(i-1)+k(1,3)/2);
+ k(2,2)=h * f2(x(i-1)+h/2, y1(i-1)+k(1,1)/2, y2(i-1)+k(1,2)/2, y3(i-1)+k(1,3)/2);
+ k(2,3)=h * f3(x(i-1)+h/2, y1(i-1)+k(1,1)/2, y2(i-1)+k(1,2)/2, y3(i-1)+k(1,3)/2);
+
+ k(3,1)=h * f1(x(i-1)+h/2, y1(i-1)+k(2,1)/2, y2(i-1)+k(2,2)/2, y3(i-1)+k(2,3)/2);
+ k(3,2)=h * f2(x(i-1)+h/2, y1(i-1)+k(2,1)/2, y2(i-1)+k(2,2)/2, y3(i-1)+k(2,3)/2);
+ k(3,3)=h * f3(x(i-1)+h/2, y1(i-1)+k(2,1)/2, y2(i-1)+k(2,2)/2, y3(i-1)+k(2,3)/2);
+
+ k(4,1)=h * f1(x(i-1)+h, y1(i-1)+k(3,1), y2(i-1)+k(3,2), y3(i-1)+k(3,3));
+ k(4,2)=h * f2(x(i-1)+h, y1(i-1)+k(3,1), y2(i-1)+k(3,2), y3(i-1)+k(3,3));
+ k(4,3)=h * f3(x(i-1)+h, y1(i-1)+k(3,1), y2(i-1)+k(3,2), y3(i-1)+k(3,3));
+
+ y1(i)=y1(i-1)+(1/6)*(k(1,1)+2*k(2,1)+2*k(3,1)+k(4,1));
+ y2(i)=y2(i-1)+(1/6)*(k(1,2)+2*k(2,2)+2*k(3,2)+k(4,2));
+ y3(i)=y3(i-1)+(1/6)*(k(1,3)+2*k(2,3)+2*k(3,3)+k(4,3));
+ fprintf('y(%g)=%f\n',x(i),y1(i));
+end
+% Plotting the numerical vs. exact solution
+plot(x, y1, 'bo-');
+hold on
+plot( x, y_exact, 'r*--');
+legend('RK4 Approximation', 'Exact Solution');
+xlabel('x'); ylabel('y');
+title('Comparison of RK4 Solution and Exact Solution');
+grid on;
+
+
+
+
+Higher oreder Huen's
+clc
+clear all
+clear figure
+x(1)=0;
+xn=3;
+h=0.2;
+n=(xn-x(1))/h;
+y1(1) = -0.4;
+y2(1) = -0.6;
+f1 = @(x, y1, y2) y2;
+f2 = @(x, y1, y2) 2*y2 - y1 + (sin(x))*(exp(2*x));
+for i=2:n+1
+ x(i)=x(i-1)+h;
+ k(1,1)=h * f1(x(i-1), y1(i-1), y2(i-1));
+ k(1,2)=h * f2(x(i-1), y1(i-1), y2(i-1));
+
+
+ k(2,1)=h * f1(x(i-1)+h, y1(i-1)+k(1,1), y2(i-1)+k(1,2));
+ k(2,2)=h * f2(x(i-1)+h, y1(i-1)+k(1,1), y2(i-1)+k(1,2));
+
+
+ y1(i)=y1(i-1)+(1/2)*(k(1,1)+k(2,1));
+ y2(i)=y2(i-1)+(1/2)*(k(1,2)+k(2,2));
+
+ fprintf('y(%g)=%f\n',x(i),y1(i));
+end
+% Plotting the numerical vs. exact solution
+plot(x, y1, 'bo-');
+legend('Heuns Approximation');
+xlabel('x'); ylabel('y');
+title('y(x)');
+grid on;
+
+
+12. elliptic x2+y2
+
+clc
+clear all
+clear figure
+h = 0.1;
+k=0.1;
+n1=1/h;
+n2=1/k;
+x = 0:h:1;
+y = 0:k:1;
+[X,Y] = meshgrid(x,y);
+u = X.^2 + Y.^2; % Boundary condition
+f = 4; % RHS of the PDE
+% Solve interior points
+for i = 2:n1
+ fprintf('The values of u at x=%g\n',x(i))
+ for j = 2:n2
+ u(i,j) = (u(i+1,j) + u(i-1,j) + u(i,j+1) + u(i,j-1) - h^2*f)/4;
+ fprintf('u(%g,%g)=%f\t',x(i),y(j),u(i,j))
+ end
+ fprintf('\n')
+end
+surf(x,y,u)
+xlabel('x-axis')
+ylabel('y-axis')
+zlabel('u(x,y)')
+title('Solution for u_{xx} + u_{yy} = 4 with u(x,y) = x^2 + y^2')
+
+
+
+Direct method for solving elliptic-0
+
+clc
+clear all
+clear figure
+x(1)=0;
+xn=1;
+y(1)=0;
+yn=1;
+h = 0.1;
+k=0.1;
+n=(xn-x(1))/h;
+N=(yn-y(1))/k;
+u = zeros(n+1, N+1);
+f = 2;
+ for i = 2:n
+ u_old = u;
+ x(i)=x(i-1)+h;
+ for j = 2:N
+ y(i)=y(i-1)+k;
+ u(i,j) = (u_old(i+1,j) + u_old(i-1,j) + u_old(i,j+1) + u_old(i,j-1) - h^2*f)/4;
+ fprintf('u(%g,%g)=%f\n',x(i),y(i),u(i,j))
+ end
+ end
+x = 0:h:1;
+y = 0:h:1;
+[X,Y] = meshgrid(x,y);
+surf(x,y,u)
+xlabel('x-axis')
+ylabel('y-axis')
+zlabel('u(x,y)')
+title('Solution for u_{xx} + u_{yy} = 2 with u=0 on boundaries')
+
+
+
+question no 14-sinx + consx
+
+clc
+clear all
+clear figure
+h = 0.1;
+k=0.1;
+n1=1/h;
+n2=1/k;
+x = 0:h:1;
+y = 0:k:1;
+[X,Y] = meshgrid(x,y);
+u = sin(X) + cos(Y); % Boundary condition
+f = - sin(X) - cos(Y); % RHS of the PDE
+% Solve interior points
+for i = 2:n1
+ fprintf('The values of u at x=%g\n',x(i))
+ for j = 2:n2
+ u(i,j) = (u(i+1,j) + u(i-1,j) + u(i,j+1) + u(i,j-1) - h^2*f(i,j))/4;
+ fprintf('u(%g,%g)=%f\t',x(i),y(j),u(i,j))
+ end
+ fprintf('\n')
+end
+surf(x,y,u)
+xlabel('x-axis')
+ylabel('y-axis')
+zlabel('u(x,y)')
+title('Solution for u_{xx} + u_{yy} = -sin(x)-cos(y) with u(x,y) = sin(x)+cos(y)')
+
+
+
+question no 15
+clc
+clear all
+h = 1;
+k=1;
+N = round(1/h);
+x = 0:h:1;
+y = 0:k:1;
+[X, Y] = meshgrid(x,y);
+% RHS function
+f = -10 * (X.^2 + Y.^2 + 10);
+% Initial guess for u (0 everywhere, boundary is 0)
+u = zeros(N+1, N+1);
+% Jacobi iteration
+for iter = 1:10
+ u_old = u;
+ for i = 2:N
+ fprintf('The values of u at x = %g\n', x(i))
+ for j = 2:N
+ u(i,j) = (u_old(i+1,j) + u_old(i-1,j) + u_old(i,j+1) + u_old(i,j-1) - h^2 * f(i,j)) / 4;
+ fprintf('u(%g,%g) = %f\t', x(i), y(j), u(i,j))
+ end
+ fprintf('\n')
+ end
+end
+% Plot
+surf(x, y, u)
+xlabel('x-axis')
+ylabel('y-axis')
+zlabel('u(x,y)')
+title('Solution of u_{xx} + u_{yy} = -10(x^2 + y^2 + 10), u = 0 on boundaries')
+question no 15(a)
+h = 0.1;
+N = round(1/h);
+x = 0:h:1;
+y = 0:h:1;
+[X,Y] = meshgrid(x,y);
+f = X + Y;
+u = zeros(N+1,N+1);
+% Jacobi iteration
+for iter=1:10
+ u_old = u;
+ for i = 2:N
+ for j = 2:N
+ u(i,j) = (u_old(i+1,j) + u_old(i-1,j) + u_old(i,j+1) + u_old(i,j-1) - h^2*f(i,j))/4;
+ fprintf('u(%g,%g)=%f\t',x(i),y(j),u(i,j))
+ end
+ fprintf('\n')
+ end
+end
+surf(x,y,u)
+xlabel('x-axis')
+ylabel('y-axis')
+zlabel('u(x,y)')
+title('Solution of u_{xx} + u_{yy} = x + y, u = 0 on boundaries')
+
+
+
+
+
+question no 16(jacobi)
+clc
+clear all
+clear figure
+% Parameters
+L = 1; % Length of domain
+N = 20; % Number of grid points in each direction
+h = L/(N-1); % Grid spacing
+max_iter = 1000; % Maximum number of iterations
+tol = 1e-6; % Tolerance for convergence
+% Initialize grid
+x = linspace(0, L, N);
+y = linspace(0, L, N);
+[X, Y] = meshgrid(x, y);
+% Initialize solution matrix
+u = ones(N, N);
+% Apply boundary conditions
+u(1,:) = 0; % y = 0
+u(end,:) = 0; % y = L
+u(:,1) = 0; % x = 0
+u(:,end) = 0; % x = L
+% Right-hand side of the equation
+f = 2 * ones(N, N);
+% Jacobi method
+u_jacobi = u; % Initial guess
+u_new = u_jacobi;
+for iter = 1:max_iter
+ for i = 2:N-1
+ for j = 2:N-1
+ u_new(i,j) = (u_jacobi(i-1,j) + u_jacobi(i+1,j) + ...
+ u_jacobi(i,j-1) + u_jacobi(i,j+1) - h^2*f(i,j))/4;
+ end
+ end
+
+ % Check for convergence
+ if (abs(u_new - u_jacobi)) < tol
+ break;
+ end
+
+ u_jacobi = u_new;
+end
+% Display results
+fprintf('Jacobi method converged in %d iterations\n', iter);
+figure;
+surf(X, Y, u_jacobi);
+title('Solution using Jacobi Method');
+xlabel('x'); ylabel('y'); zlabel('u(x,y)');
+
+
+
+
+question no 16(gauss seidal)
+clc
+clear all
+clear figure
+% Parameters
+L = 1; % Length of domain
+N = 20; % Number of grid points in each direction
+h = L/(N-1); % Grid spacing
+max_iter = 1000; % Maximum number of iterations
+tol = 1e-6; % Tolerance for convergence
+% Initialize grid
+x = linspace(0, L, N);
+y = linspace(0, L, N);
+[X, Y] = meshgrid(x, y);
+% Initialize solution matrix
+u = ones(N, N);
+% Apply boundary conditions
+u(1,:) = 0; % y = 0
+u(end,:) = 0; % y = L
+u(:,1) = 0; % x = 0
+u(:,end) = 0; % x = L
+% Right-hand side of the equation
+f = 2 * ones(N, N);
+% Gauss-Seidel method
+u_gs = u; % Initial guess
+for iter = 1:max_iter
+ u_old = u_gs;
+
+ for i = 2:N-1
+ for j = 2:N-1
+ u_gs(i,j) = (u_gs(i-1,j) + u_gs(i+1,j) + ...
+ u_gs(i,j-1) + u_gs(i,j+1) - h^2*f(i,j))/4;
+ end
+ end
+
+ % Check for convergence
+ if (abs(u_gs - u_old)) < tol
+ break;
+ end
+end
+% Display results
+fprintf('Gauss-Seidel method converged in %d iterations\n', iter);
+figure;
+surf(X, Y, u_gs);
+title('Solution using Gauss-Seidel Method');
+xlabel('x'); ylabel('y'); zlabel('u(x,y)');
+
+
+
+
+question no 16(SOR)
+clc
+clear all
+clear figure
+% Parameters
+L = 1; % Length of domain
+N = 20; % Number of grid points in each direction
+h = L/(N-1); % Grid spacing
+max_iter = 1000; % Maximum number of iterations
+tol = 1e-6; % Tolerance for convergence
+omega = 1.8; % Relaxation parameter (1 < omega < 2)
+% Initialize grid
+x = linspace(0, L, N);
+y = linspace(0, L, N);
+[X, Y] = meshgrid(x, y);
+% Initialize solution matrix
+u = ones(N, N);
+% Apply boundary conditions
+u(1,:) = 0; % y = 0
+u(end,:) = 0; % y = L
+u(:,1) = 0; % x = 0
+u(:,end) = 0; % x = L
+% Right-hand side of the equation
+f = 2 * ones(N, N);
+% SOR method
+u_sor = u; % Initial guess
+for iter = 1:max_iter
+ u_old = u_sor;
+
+ for i = 2:N-1
+ for j = 2:N-1
+ % Calculate the Gauss-Seidel update
+ gs_update = (u_sor(i-1,j) + u_sor(i+1,j) + ...
+ u_sor(i,j-1) + u_sor(i,j+1) - h^2*f(i,j))/4;
+
+ % Apply over-relaxation
+ u_sor(i,j) = (1-omega)*u_sor(i,j) + omega*gs_update;
+ end
+ end
+
+ % Check for convergence
+ if (abs(u_sor - u_old)) < tol
+ break;
+ end
+end
+% Display results
+fprintf('SOR method (?=%.1f) converged in %d iterations\n', omega, iter);
+figure;
+surf(X, Y, u_sor);
+title(sprintf('Solution using SOR Method (?=%.1f)', omega));
+xlabel('x'); ylabel('y'); zlabel('u(x,y)');
+colorbar;
+% Compare with exact solution (if known)
+% For this simple case, the exact solution can be computed analytically
+% [exact solution code would go here if available]
+
+
+
+Question no 17(jacobi)
+clc
+clear all
+clear figure
+% Parameters
+h = 1; k = 1;
+nx = 1/h + 1; ny = 1/k + 1;
+max_iter = 1000;
+tolerance = 1e-6;
+% Initialize grid
+u = zeros(nx, ny);
+u_new = zeros(nx, ny);
+% Boundary conditions (already zero)
+% Source function
+f = @(x,y) -10*(x.^2 + y.^2 + 10);
+% Jacobi iteration
+for iter = 1:max_iter
+ for i = 2:nx-1
+ for j = 2:ny-1
+ x = (i-1)*h;
+ y = (j-1)*k;
+ u_new(i,j) = (u(i+1,j) + u(i-1,j) + u(i,j+1) + u(i,j-1) - h^2*f(x,y))/4;
+ end
+ end
+
+ % Check convergence
+ if max(abs(u_new(2:end-1,2:end-1) - u(2:end-1,2:end-1))) < tolerance
+ break;
+ end
+
+ u = u_new;
+end
+% Display results
+disp(['Jacobi converged in ', num2str(iter), ' iterations']);
+surf(u);
+title('Solution using Jacobi Method');
+xlabel('x'); ylabel('y');
+
+
+
+
+question no 17(gauss seidal)
+clc
+clear all
+clear figure
+% Parameters
+h = 1; k = 1;
+nx = 1/h + 1; ny = 1/k + 1;
+max_iter = 1000;
+tolerance = 1e-6;
+% Initialize grid
+u = zeros(nx, ny);
+% Boundary conditions (already zero)
+% Source function
+f = @(x,y) -10*(x.^2 + y.^2 + 10);
+% Gauss-Seidel iteration
+for iter = 1:max_iter
+ error = 0;
+ for i = 2:nx-1
+ for j = 2:ny-1
+ x = (i-1)*h;
+ y = (j-1)*k;
+ old_val = u(i,j);
+ u(i,j) = (u(i+1,j) + u(i-1,j) + u(i,j+1) + u(i,j-1) - h^2*f(x,y))/4;
+ error = max(error, abs(old_val - u(i,j)));
+ end
+ end
+
+ % Check convergence
+ if error < tolerance
+ break;
+ end
+end
+% Display results
+disp(['Gauss-Seidel converged in ', num2str(iter), ' iterations']);
+surf(u);
+title('Solution using Gauss-Seidel Method');
+xlabel('x'); ylabel('y');
+
+
+
+
+question no 17(SOR)
+clc
+clear all
+clear figure
+% Parameters
+h = 1; k = 1;
+nx = 1/h + 1; ny = 1/k + 1;
+max_iter = 1000;
+tolerance = 1e-6;
+omega = 1.8; % Relaxation parameter (1 < omega < 2)
+% Initialize grid
+u = zeros(nx, ny);
+% Boundary conditions (already zero)
+% Source function
+f = @(x,y) -10*(x.^2 + y.^2 + 10);
+% SOR iteration
+for iter = 1:max_iter
+ error = 0;
+ for i = 2:nx-1
+ for j = 2:ny-1
+ x = (i-1)*h;
+ y = (j-1)*k;
+ old_val = u(i,j);
+ residual = (u(i+1,j) + u(i-1,j) + u(i,j+1) + u(i,j-1) - h^2*f(x,y))/4 - old_val;
+ u(i,j) = old_val + omega * residual;
+ error = max(error, abs(old_val - u(i,j)));
+ end
+ end
+
+ % Check convergence
+ if error < tolerance
+ break;
+ end
+end
+% Display results
+disp(['SOR converged in ', num2str(iter), ' iterations with omega = ', num2str(omega)]);
+surf(u);
+title('Solution using SOR Method');
+xlabel('x'); ylabel('y');

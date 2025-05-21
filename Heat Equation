@@ -1,0 +1,38 @@
+function u=Heat_equation_crack(domainlength,simulationtime,icf1,icf2,c,bc,dx,dt)
+%meaking gred
+x=0:dx:domainlength ;  % j
+t=0:dt:simulationtime ;  %i
+alpha=(c.^2*dt)/(dx^2);
+u=zeros(length(t),length(x));
+for i=1:length(t)
+    for j=1:length(x)
+        u(i,1)=bc(1);
+        u(i,length(x))=bc(2);
+        if (j< (length(x)/2)+1)
+            u(1,j)=icf1((j-1)*dx,1*dt);
+        else
+            u(1,j)=icf2((j-1)*dx,1*dt);
+        end
+    end
+end
+m=length(x);
+n=length(t);
+a=zeros(m-2,m-2);% making tridiagonal matrix
+b=zeros(m-2,m-2); %making tridiagonal matrix
+for i=1:m-3
+    a(i,i)=2+2*alpha;
+    a(i,i+1)=-alpha;
+    a(i+1,i)=-alpha;
+    b(i,i)=2-2*alpha;
+    b(i,i+1)=alpha;
+    b(i+1,i)=alpha;
+end
+a(m-2,m-2)=2+2*alpha;
+b(m-2,m-2)=2-2*alpha;
+z=(inv(a))*b ;
+for j=2:n
+    u(j,2:(m-1))=z*(u(j-1,2:m-1))';
+end
+disp(u);
+
+%Heat_equation_crack(1,0.625,@(x,t) 2*x,@(x,t) 2*(1-x),2,[0,0],0.1,0.001)

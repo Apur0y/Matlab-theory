@@ -239,7 +239,7 @@ title('Solution for u_{xx} + u_{yy} = -sin(x)-cos(y) with u(x,y) = sin(x)+cos(y)
 
 
 
-question no 15
+question no 15-Poission Equation
 clc
 clear all
 h = 1;

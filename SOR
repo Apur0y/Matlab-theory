@@ -1,0 +1,303 @@
+
+Question no 16-Uxx+Uyy=2
+
+clc
+clear all
+clear figure
+h = figure(1);
+set(h, 'Position', [250, 200, 900, 300]); % Taller figure to accommodate 3 subplots
+% Parameters
+h = 0.1;
+k=0.1; % Length of domain
+n = (1-0)/h;
+N=(1-0)/k; % Number of grid points in each direction
+max_iter = 1000; % Maximum number of iterations
+tol = 1e-6; % Tolerance for convergence
+% Initialize grid
+x = 0:h:1;
+y = 0:k:1;
+[X, Y] = meshgrid(x, y);
+% Initialize solution matrix
+u = ones(n+1, N+1);
+% Apply boundary conditions
+u(1,:) = 0; % y = 0
+u(end,:) = 0; % y = L
+u(:,1) = 0; % x = 0
+u(:,end) = 0; % x = L
+% Right-hand side of the equation
+f = 2* ones(n+1, N+1);
+% Jacobi method
+u_jacobi = u; % Initial guess
+u_new = u_jacobi;
+disp('the values of u by using jacobi method')
+for iter = 1:max_iter
+ for i = 2:n
+ for j = 2:N
+ u_new(i,j) = (u_jacobi(i-1,j) + u_jacobi(i+1,j) + ...
+ u_jacobi(i,j-1) + u_jacobi(i,j+1) - h^2*f(i,j))/4;
+
+ end
+
+ end
+
+ % Check for convergence
+ if (abs(u_new - u_jacobi)) < tol
+ break;
+ end
+ fprintf('u=%f\n',u_new(i,j))
+ u_jacobi = u_new;
+end
+% Display results
+fprintf('Jacobi method converged in %d iterations\n', iter);
+subplot(1,3,1)
+surf(X, Y, u_jacobi);
+title('Solution using Jacobi Method');
+xlabel('x'); ylabel('y'); zlabel('u(x,y)');
+% Parameters
+h = 0.1;
+k=0.1; % Length of domain
+n = (1-0)/h;
+N=(1-0)/k; % Number of grid points in each direction
+max_iter = 1000; % Maximum number of iterations
+tol = 1e-6; % Tolerance for convergence
+% Initialize grid
+x = 0:h:1;
+y = 0:k:1;
+[X, Y] = meshgrid(x, y);
+% Initialize solution matrix
+u = ones(n+1, N+1);
+% Apply boundary conditions
+u(1,:) = 0; % y = 0
+u(end,:) = 0; % y = L
+u(:,1) = 0; % x = 0
+u(:,end) = 0; % x = L
+% Right-hand side of the equation
+f = 2 * ones(n+1, N+1);
+% Gauss-Seidel method
+u_gs = u; % Initial guess
+disp('the values of u by using gauss seidal method')
+for iter = 1:max_iter
+ u_old = u_gs;
+
+ for i = 2:n
+ for j = 2:N
+ u_gs(i,j) = (u_gs(i-1,j) + u_gs(i+1,j) + ...
+ u_gs(i,j-1) + u_gs(i,j+1) - h^2*f(i,j))/4;
+ end
+
+ end
+
+ % Check for convergence
+ if (abs(u_gs - u_old)) < tol
+ break;
+ end
+ fprintf('u=%f\n',u_gs(i,j))
+end
+% Display results
+fprintf('Gauss-Seidel method converged in %d iterations\n', iter);
+subplot(1,3,2)
+surf(X, Y, u_gs);
+title('Solution using Gauss-Seidel Method');
+xlabel('x'); ylabel('y'); zlabel('u(x,y)');
+% Parameters
+h = 0.1;
+k=0.1; % Length of domain
+n = (1-0)/h;
+N=(1-0)/k; % Number of grid points in each direction
+max_iter = 1000; % Maximum number of iterations
+tol = 1e-6; % Tolerance for convergence
+omega = 1.8; % Relaxation parameter (1 < omega < 2)
+% Initialize grid
+x = 0:h:1;
+y = 0:k:1;
+[X, Y] = meshgrid(x, y);
+% Initialize solution matrix
+u = ones(n+1, N+1);
+% Apply boundary conditions
+u(1,:) = 0; % y = 0
+u(end,:) = 0; % y = L
+u(:,1) = 0; % x = 0
+u(:,end) = 0; % x = L
+% Right-hand side of the equation
+f = 2 * ones(n+1, N+1);
+% SOR method
+u_sor = u; % Initial guess
+disp('the values of u by using SOR method')
+for iter = 1:max_iter
+ u_old = u_sor;
+
+ for i = 2:n
+ for j = 2:N
+ % Calculate the Gauss-Seidel update
+ gs_update = (u_sor(i-1,j) + u_sor(i+1,j) + ...
+ u_sor(i,j-1) + u_sor(i,j+1) - h^2*f(i,j))/4;
+
+ % Apply over-relaxation
+ u_sor(i,j) = (1-omega)*u_sor(i,j) + omega*gs_update;
+ end
+
+ end
+
+ % Check for convergence
+ if (abs(u_sor - u_old)) < tol
+ break;
+ end
+ fprintf('u=%f\n',u_sor(i,j))
+end
+% Display results
+fprintf('SOR method (?=%.1f) converged in %d iterations\n', omega, iter);
+subplot(1,3,3)
+surf(X, Y, u_sor);
+title(sprintf('Solution using SOR Method (?=%.1f)', omega));
+xlabel('x'); ylabel('y'); zlabel('u(x,y)');
+
+
+
+
+question no 17
+-10(x2+y2+10)
+
+clc
+clear all
+clear figure
+h = figure(1);
+set(h, 'Position', [250, 200, 900, 300]); % Taller figure to accommodate 3 subplots
+% Parameters
+h= 1;
+k=1; % Length of domain
+n = (1-0)/h;
+N=(1-0)/k; % Number of grid points in each direction
+max_iter = 1000; % Maximum number of iterations
+tol = 1e-6; % Tolerance for convergence
+% Initialize grid
+x = 0:h:1;
+y = 0:k:1;
+[X, Y] = meshgrid(x, y);
+% Initialize solution matrix
+u = ones(n+1, N+1);
+% Apply boundary conditions
+u(1,:) = 0; % y = 0
+u(end,:) = 0; % y = L
+u(:,1) = 0; % x = 0
+u(:,end) = 0; % x = L
+% Right-hand side of the equation
+f = (-10)*(X^2+Y^2+10)* ones(n+1, N+1);
+% Jacobi method
+u_jacobi = u; % Initial guess
+u_new = u_jacobi;
+for iter = 1:max_iter
+ for i = 2:n
+ for j = 2:N
+ u_new(i,j) = (u_jacobi(i-1,j) + u_jacobi(i+1,j) + ...
+ u_jacobi(i,j-1) + u_jacobi(i,j+1) - h^2*f(i,j))/4;
+
+ end
+ fprintf('u=%f\n',u_new(i,j))
+ end
+
+ % Check for convergence
+ if (abs(u_new - u_jacobi)) < tol
+ break;
+ end
+
+ u_jacobi = u_new;
+end
+% Display results
+fprintf('Jacobi method converged in %d iterations\n', iter);
+subplot(1,3,1)
+surf(X, Y, u_jacobi);
+title('Solution using Jacobi Method');
+xlabel('x'); ylabel('y'); zlabel('u(x,y)');
+% Parameters
+h = 1;
+k=1; % Length of domain
+n = (1-0)/h;
+N=(1-0)/k; % Number of grid points in each direction
+max_iter = 1000; % Maximum number of iterations
+tol = 1e-6; % Tolerance for convergence
+% Initialize grid
+x = 0:h:1;
+y = 0:k:1;
+[X, Y] = meshgrid(x, y);
+% Initialize solution matrix
+u = ones(n+1, N+1);
+% Apply boundary conditions
+u(1,:) = 0; % y = 0
+u(end,:) = 0; % y = L
+u(:,1) = 0; % x = 0
+u(:,end) = 0; % x = L
+% Right-hand side of the equation
+f = (-10)*(X^2+Y^2+10) * ones(n+1, N+1);
+% Gauss-Seidel method
+u_gs = u; % Initial guess
+for iter = 1:max_iter
+ u_old = u_gs;
+
+ for i = 2:n
+ for j = 2:N
+ u_gs(i,j) = (u_gs(i-1,j) + u_gs(i+1,j) + ...
+ u_gs(i,j-1) + u_gs(i,j+1) - h^2*f(i,j))/4;
+ end
+ fprintf('u=%f\n',u_gs(i,j))
+ end
+
+ % Check for convergence
+ if (abs(u_gs - u_old)) < tol
+ break;
+ end
+end
+% Display results
+fprintf('Gauss-Seidel method converged in %d iterations\n', iter);
+subplot(1,3,2)
+surf(X, Y, u_gs);
+title('Solution using Gauss-Seidel Method');
+xlabel('x'); ylabel('y'); zlabel('u(x,y)');
+% Parameters
+h = 1;
+k=1; % Length of domain
+n = (1-0)/h;
+N=(1-0)/k; % Number of grid points in each direction
+max_iter = 1000; % Maximum number of iterations
+tol = 1e-6; % Tolerance for convergence
+omega = 1.8; % Relaxation parameter (1 < omega < 2)
+% Initialize grid
+x = 0:h:1;
+y = 0:k:1;
+[X, Y] = meshgrid(x, y);
+% Initialize solution matrix
+u = ones(n+1, N+1);
+% Apply boundary conditions
+u(1,:) = 0; % y = 0
+u(end,:) = 0; % y = L
+u(:,1) = 0; % x = 0
+u(:,end) = 0; % x = L
+% Right-hand side of the equation
+f = (-10)*(X^2+Y^2+10) * ones(n+1, N+1);
+% SOR method
+u_sor = u; % Initial guess
+for iter = 1:max_iter
+ u_old = u_sor;
+
+ for i = 2:n
+ for j = 2:N
+ % Calculate the Gauss-Seidel update
+ gs_update = (u_sor(i-1,j) + u_sor(i+1,j) + ...
+ u_sor(i,j-1) + u_sor(i,j+1) - h^2*f(i,j))/4;
+
+ % Apply over-relaxation
+ u_sor(i,j) = (1-omega)*u_sor(i,j) + omega*gs_update;
+ end
+ fprintf('u=%f\n',u_sor(i,j))
+ end
+
+ % Check for convergence
+ if (abs(u_sor - u_old)) < tol
+ break;
+ end
+end
+% Display results
+fprintf('SOR method (?=%.1f) converged in %d iterations\n', omega, iter);
+subplot(1,3,3)
+surf(X, Y, u_sor);
+title(sprintf('Solution using SOR Method (?=%.1f)', omega));
+xlabel('x'); ylabel('y'); zlabel('u(x,y)');
